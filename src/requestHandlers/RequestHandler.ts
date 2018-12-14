@@ -1,45 +1,29 @@
 import { Handler } from './Handler'
 import { RequestStartHandler } from './RequestStartHandler'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
-import { State } from '../State'
+import { StateManager } from '../application/state/StateManager'
 import { RequestResponseHandler } from './RequestResponseHandler'
+import { Request } from '../Request'
 
-type Response<T> = { hasError: boolean; value: null | T }
-
-export type HandlerContext<T> = {
-  state: State
+export type RequestHandlerContext<T> = {
+  state: StateManager
   request: Promise<T>
-  response: Response<T>
+  response: Request.Payload<T>
 }
 
-export class ResponseSuccess<T> {
-  constructor(public readonly value: T) {}
-}
+export class RequestHandler<T> {
+  private requestStartHandler: Handler<RequestHandlerContext<T>> = new RequestStartHandler()
 
-export class ResponseError extends Error {
-}
-
-export class RequestHandler<T = unknown> {
-  private requestStartHandler: Handler<
-    HandlerContext<T>
-  > = new RequestStartHandler()
-
-  constructor(private readonly state: State) {
-    const requestResponseHandler: Handler<
-      HandlerContext<T>
-    > = new RequestResponseHandler<T>()
-    const requestEmptyHandler: Handler<
-      HandlerContext<T>
-    > = new RequestEmptyHandler<T>()
+  constructor(private readonly state: StateManager) {
+    const requestResponseHandler: Handler<RequestHandlerContext<T>> = new RequestResponseHandler<T>()
+    const requestEmptyHandler: Handler<RequestHandlerContext<T>> = new RequestEmptyHandler<T>()
 
     this.requestStartHandler.setNext(requestResponseHandler)
     requestResponseHandler.setNext(requestEmptyHandler)
   }
 
-  public async trigger(
-    request: Promise<T>
-  ): Promise<ResponseSuccess<T> | ResponseError> {
-    const response: Response<T> = {
+  public async trigger(request: Promise<T>): Promise<Request.Success<T> | Request.Fail> {
+    const response: Request.Payload<T> = {
       hasError: false,
       value: null
     }
@@ -47,8 +31,8 @@ export class RequestHandler<T = unknown> {
     await this.requestStartHandler.next({ state: this.state, request, response })
 
     if (response.hasError) {
-      return new ResponseError()
+      return new Request.Fail()
     }
-    return new ResponseSuccess(response.value as T)
+    return new Request.Success(response.value as T)
   }
 }

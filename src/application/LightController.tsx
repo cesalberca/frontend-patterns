@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { State } from '../State'
-import { Observer } from '../Observer'
+import { StateManager } from './state/StateManager'
+import { Observer } from './state/Observer'
 import { Light, LightStates } from './Light'
 import { Consumer } from './rootContainer'
 
 interface Props {
-  state: State
+  state: StateManager
 }
 
 export class LightController extends Component<Props> implements Observer {
@@ -14,15 +14,15 @@ export class LightController extends Component<Props> implements Observer {
   }
 
   public getState(): LightStates {
-    if (this.props.state.currentState.isLoading) {
+    if (this.props.state.state.isLoading) {
       return 'loading'
     }
 
-    if (this.props.state.currentState.hasError) {
+    if (this.props.state.state.hasError) {
       return 'error'
     }
 
-    if (this.props.state.currentState.hasSuccess) {
+    if (this.props.state.state.hasSuccess) {
       return 'success'
     }
 
@@ -36,22 +36,22 @@ export class LightController extends Component<Props> implements Observer {
           <div className="light-controller">
             <Light state={this.getState()} />
             <button
-              disabled={this.props.state.currentState.isLoading}
+              disabled={this.props.state.state.isLoading}
               className={`button ${
-                this.props.state.currentState.isLoading
+                this.props.state.state.isLoading
                   ? 'button--disabled'
                   : ''
               }`}
               onClick={async () => {
-                this.props.state.currentState.users = []
-                this.props.state.currentState.users = await context.fakeUserRepository.findAll()
+                this.props.state.state.users = []
+                this.props.state.state.users = await context.fakeUserRepository.findAll()
               }}
             >
               Get users
             </button>
             <h3>Users</h3>
-            {this.props.state.currentState.users.map(user => (
-              <p>{user.name}</p>
+            {this.props.state.state.users.map(user => (
+              <p key={user.name}>{user.name}</p>
             ))}
           </div>
         )}

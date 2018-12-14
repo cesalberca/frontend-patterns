@@ -1,7 +1,7 @@
 import { Handler } from './Handler'
-import { HandlerContext } from './RequestHandler'
+import { RequestHandlerContext } from './RequestHandler'
 
-export class RequestEmptyHandler<T> implements Handler<HandlerContext<T>> {
+export class RequestEmptyHandler<T> implements Handler<RequestHandlerContext<T>> {
   public async next() {}
 
   public setNext() {}

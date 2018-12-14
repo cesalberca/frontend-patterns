@@ -17,21 +17,28 @@ body {
 }
 
 .button {
-  background-color: midnightblue;
-  color: white;
   padding: 0.5rem 0.75rem;
   border-radius: 9999px;
+  border: 2px solid #5252ff;
+  color: #5252ff;
+  box-shadow: 0 5px 1px -1px hsla(0, 0%, 0%, 0.3);
+  cursor: pointer;
 }
 
 .button--disabled {
   background-color: darkgrey;
+  border: 2px solid grey;
+  color: gainsboro;
 }
 
 .light {
   display: block;
-  width: 50px;
-  height: 50px;
+  width: 25px;
+  height: 25px;
   border-radius: 100%;
+  margin-bottom: 10px;
+  box-shadow: 0 5px 1px -1px hsla(0, 0%, 0%, 0.3);
+  transition: background-color ease-in 0.25s;
 }
 
 .light--none {
@@ -43,9 +50,9 @@ body {
 }
 
 .light--error {
-  background-color: crimson;
+  background-color: #f30e39;
 }
 
 .light--success {
-  background-color: darkgreen;
+  background-color: #0ebf0e;
 }

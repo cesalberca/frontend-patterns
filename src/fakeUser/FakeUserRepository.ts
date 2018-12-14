@@ -1,4 +1,4 @@
 import { Repository } from './Repository'
-import { FakeUser } from './FakeUserHttpRepository'
+import { FakeUser } from './FakeUser'
 
 export interface FakeUserRepository extends Repository<FakeUser> {}

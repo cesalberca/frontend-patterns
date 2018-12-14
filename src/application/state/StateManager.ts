@@ -1,33 +1,26 @@
 import { Subject } from './Subject'
 import { Observer } from './Observer'
-import { FakeUser } from './FakeUserHttpRepository'
+import { State } from './State'
 
-export interface ApplicationState {
-  isLoading: boolean
-  hasError: boolean
-  hasSuccess: boolean
-  users: FakeUser[]
-}
-
-export class State implements Subject {
+export class StateManager implements Subject {
   private readonly _observers: Observer[] = []
 
-  public currentState: ApplicationState
+  public state: State
 
-  private static _instance: State | null = null
+  private static _instance: StateManager | null = null
 
   public static get instance() {
     if (this._instance === null) {
-      this._instance = new State()
+      this._instance = new StateManager()
     }
 
     return this._instance
   }
 
   private constructor() {
-    this.currentState = new Proxy(this.getEmptyState(), {
+    this.state = new Proxy(this.getEmptyState(), {
       set: (
-        target: ApplicationState,
+        target: State,
         p: PropertyKey,
         value: any,
         receiver: any
@@ -39,7 +32,7 @@ export class State implements Subject {
     })
   }
 
-  public getEmptyState(): ApplicationState {
+  public getEmptyState(): State {
     return {
       isLoading: false,
       hasError: false,
@@ -49,9 +42,10 @@ export class State implements Subject {
   }
 
   public setEmptyState(): void {
-    this.currentState.isLoading = false
-    this.currentState.hasError = false
-    this.currentState.hasSuccess = false
+    this.state.isLoading = false
+    this.state.hasError = false
+    this.state.hasSuccess = false
+    this.state.users = []
   }
 
   public notifyAll() {

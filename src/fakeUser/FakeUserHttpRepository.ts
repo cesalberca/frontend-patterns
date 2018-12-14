@@ -1,10 +1,8 @@
 import { FakeUserRepository } from './FakeUserRepository'
-import { RequestHandler, ResponseError } from './requestHandlers/RequestHandler'
-import { wait } from './utils/wait'
-
-export interface FakeUser {
-  name: string
-}
+import { RequestHandler } from '../requestHandlers/RequestHandler'
+import { Request } from '../Request'
+import { wait } from '../utils/wait'
+import { FakeUser } from './FakeUser'
 
 export class FakeUserHttpRepository implements FakeUserRepository {
   constructor(private readonly requestHandler: RequestHandler<FakeUser[]>) {}
@@ -14,8 +12,8 @@ export class FakeUserHttpRepository implements FakeUserRepository {
 
     const response = await this.requestHandler.trigger(promise)
 
-    if (response instanceof ResponseError) {
-      throw new Error('users could not be found, error.')
+    if (response instanceof Request.Fail) {
+      throw new Error('users could not be found.')
     }
 
     return response.value

@@ -2,22 +2,20 @@ import { Handler } from './Handler'
 import { RequestErrorHandler } from './RequestErrorHandler'
 import { RequestSuccessHandler } from './RequestSuccessHandler'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
-import { HandlerContext } from './RequestHandler'
+import { RequestHandlerContext } from './RequestHandler'
 
-export class RequestResponseHandler<T> implements Handler<HandlerContext<T>> {
-  private nextHandler: Handler<HandlerContext<T>> = new RequestEmptyHandler()
+export class RequestResponseHandler<T> implements Handler<RequestHandlerContext<T>> {
+  private nextHandler: Handler<RequestHandlerContext<T>> = new RequestEmptyHandler()
 
-  private requestErrorHandler: Handler<
-    HandlerContext<T>
-  > = new RequestErrorHandler<T>()
-  private requestSuccessHandler: Handler<
-    HandlerContext<T>
-  > = new RequestSuccessHandler<T>()
+  private requestErrorHandler: Handler<RequestHandlerContext<T>> = new RequestErrorHandler<T>()
+  private requestSuccessHandler: Handler<RequestHandlerContext<T>> = new RequestSuccessHandler<T>()
 
-  public async next(context: HandlerContext<T>) {
+  constructor() {
     this.requestErrorHandler.setNext(new RequestEmptyHandler<T>())
     this.requestSuccessHandler.setNext(new RequestEmptyHandler<T>())
+  }
 
+  public async next(context: RequestHandlerContext<T>) {
     try {
       context.response.value = await context.request
       this.setNext(this.requestSuccessHandler)
@@ -26,11 +24,11 @@ export class RequestResponseHandler<T> implements Handler<HandlerContext<T>> {
       this.setNext(this.requestErrorHandler)
       await this.nextHandler.next(context)
     } finally {
-      context.state.currentState.isLoading = false
+      context.state.state.isLoading = false
     }
   }
 
-  public setNext(handler: Handler<HandlerContext<T>>) {
+  public setNext(handler: Handler<RequestHandlerContext<T>>) {
     this.nextHandler = handler
   }
 }

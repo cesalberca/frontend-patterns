@@ -1,4 +1,4 @@
-export interface Handler<T = unknown> {
+export interface Handler<T> {
   next: (context: T) => void
   setNext: (handler: Handler<T>) => void
 }
