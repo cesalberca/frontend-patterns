@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/chain-of-responsability.iml" filepath="$PROJECT_DIR$/.idea/chain-of-responsability.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/frontend-patterns.iml" filepath="$PROJECT_DIR$/.idea/frontend-patterns.iml" />
     </modules>
   </component>
 </project>
