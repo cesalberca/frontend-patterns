@@ -1,0 +1,37 @@
+body {
+  font-family: sans-serif;
+}
+
+.button {
+  background-color: midnightblue;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.button--disabled {
+  background-color: darkgrey;
+}
+
+.light {
+  display: block;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+}
+
+.light--none {
+  background-color: darkgrey;
+}
+
+.light--loading {
+  background-color: darkblue;
+}
+
+.light--error {
+  background-color: crimson;
+}
+
+.light--success {
+  background-color: darkgreen;
+}

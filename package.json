@@ -1,0 +1,33 @@
+{
+  "name": "chain-of-responsability",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "parcel index.html --open",
+    "build": "parcel build index.html",
+    "lint": "prettier --write --config .prettierrc src/**/*.ts",
+    "test": "jest --coverage"
+  },
+  "dependencies": {
+    "@babel/runtime-corejs2": "^7.2.0",
+    "react": "16.7.0-alpha.2",
+    "react-dom": "16.7.0-alpha.2",
+    "typescript": "3.2.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-transform-runtime": "7.2.0",
+    "@babel/preset-react": "7.0.0",
+    "@types/jest": "23.3.10",
+    "@types/react": "16.7.13",
+    "@types/react-dom": "16.0.11",
+    "babel-jest": "23.6.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "23.6.0",
+    "parcel-bundler": "^1.6.1",
+    "prettier": "1.15.3",
+    "ts-jest": "23.10.5"
+  },
+  "keywords": []
+}
