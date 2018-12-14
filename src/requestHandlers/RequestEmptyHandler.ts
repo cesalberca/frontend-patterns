@@ -1,8 +1,8 @@
 import { Handler } from './Handler'
-import { State } from '../application/State'
+import { HandlerContext } from './RequestHandler'
 
-export class RequestEmptyHandler implements Handler<State> {
-  public next() {}
+export class RequestEmptyHandler<T> implements Handler<HandlerContext<T>> {
+  public async next() {}
 
   public setNext() {}
 }

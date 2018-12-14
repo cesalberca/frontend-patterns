@@ -7,7 +7,9 @@ export class Application extends Component {
   public render(): React.ReactNode {
     return (
       <Provider value={contextValue}>
-        <LightController state={contextValue.state}/>
+        <main className="application">
+          <LightController state={contextValue.state} />
+        </main>
       </Provider>
     )
   }

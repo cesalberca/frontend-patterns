@@ -1,30 +1,36 @@
 import { Handler } from './Handler'
-import { State } from '../application/State'
 import { RequestErrorHandler } from './RequestErrorHandler'
 import { RequestSuccessHandler } from './RequestSuccessHandler'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
+import { HandlerContext } from './RequestHandler'
 
-export class RequestResponseHandler implements Handler<State> {
-  private nextHandler: Handler<State> = new RequestEmptyHandler()
+export class RequestResponseHandler<T> implements Handler<HandlerContext<T>> {
+  private nextHandler: Handler<HandlerContext<T>> = new RequestEmptyHandler()
 
-  private requestErrorHandler: Handler<State> = new RequestErrorHandler()
-  private requestSuccessHandler: Handler<State> = new RequestSuccessHandler()
+  private requestErrorHandler: Handler<
+    HandlerContext<T>
+  > = new RequestErrorHandler<T>()
+  private requestSuccessHandler: Handler<
+    HandlerContext<T>
+  > = new RequestSuccessHandler<T>()
 
-  public next(state: State) {
-    this.requestErrorHandler.setNext(new RequestEmptyHandler())
-    this.requestSuccessHandler.setNext(new RequestEmptyHandler())
+  public async next(context: HandlerContext<T>) {
+    this.requestErrorHandler.setNext(new RequestEmptyHandler<T>())
+    this.requestSuccessHandler.setNext(new RequestEmptyHandler<T>())
 
-    const hasError = Math.random() >= 0.5
-    if (hasError) {
-      this.setNext(this.requestErrorHandler)
-      this.nextHandler.next(state)
-    } else {
+    try {
+      context.response.value = await context.request
       this.setNext(this.requestSuccessHandler)
-      this.nextHandler.next(state)
+      await this.nextHandler.next(context)
+    } catch (e) {
+      this.setNext(this.requestErrorHandler)
+      await this.nextHandler.next(context)
+    } finally {
+      context.state.currentState.isLoading = false
     }
   }
 
-  public setNext(handler: Handler<State>) {
+  public setNext(handler: Handler<HandlerContext<T>>) {
     this.nextHandler = handler
   }
 }

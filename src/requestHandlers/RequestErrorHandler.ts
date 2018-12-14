@@ -1,16 +1,17 @@
 import { Handler } from './Handler'
-import { State } from '../application/State'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
+import { HandlerContext } from './RequestHandler'
 
-export class RequestErrorHandler implements Handler<State> {
-  private nextHandler: Handler<State> = new RequestEmptyHandler()
+export class RequestErrorHandler<T> implements Handler<HandlerContext<T>> {
+  private nextHandler: Handler<HandlerContext<T>> = new RequestEmptyHandler()
 
-  public next(state: State) {
-    state.currentState.hasError = true
-    this.nextHandler.next(state)
+  public async next(context: HandlerContext<T>) {
+    context.state.currentState.hasError = true
+    context.response.hasError = true
+    await this.nextHandler.next(context)
   }
 
-  public setNext(handler: Handler<State>) {
+  public setNext(handler: Handler<HandlerContext<T>>) {
     this.nextHandler = handler
   }
 }

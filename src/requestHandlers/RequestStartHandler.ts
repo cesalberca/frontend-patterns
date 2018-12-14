@@ -1,22 +1,17 @@
 import { Handler } from './Handler'
-import { State } from '../application/State'
-import { wait } from '../utils/wait'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
+import { HandlerContext } from './RequestHandler'
 
-export class RequestStartHandler implements Handler<State> {
-  private nextHandler: Handler<State> = new RequestEmptyHandler()
+export class RequestStartHandler<T> implements Handler<HandlerContext<T>> {
+  private nextHandler: Handler<HandlerContext<T>> = new RequestEmptyHandler()
 
-  public async next(state: State) {
-    state.setEmptyState()
-
-    state.currentState.isLoading = true
-    await wait(1)
-
-    this.nextHandler.next(state)
-    state.currentState.isLoading = false
+  public async next(context: HandlerContext<T>) {
+    context.state.setEmptyState()
+    context.state.currentState.isLoading = true
+    await this.nextHandler.next(context)
   }
 
-  public setNext(handler: Handler<State>) {
+  public setNext(handler: Handler<HandlerContext<T>>) {
     this.nextHandler = handler
   }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { State } from './State'
+import { State } from '../State'
 import { Observer } from '../Observer'
 import { Light, LightStates } from './Light'
 import { Consumer } from './rootContainer'
@@ -33,7 +33,7 @@ export class LightController extends Component<Props> implements Observer {
     return (
       <Consumer>
         {context => (
-          <div>
+          <div className="light-controller">
             <Light state={this.getState()} />
             <button
               disabled={this.props.state.currentState.isLoading}
@@ -42,12 +42,17 @@ export class LightController extends Component<Props> implements Observer {
                   ? 'button--disabled'
                   : ''
               }`}
-              onClick={() => {
-                context.requestHandler.trigger()
+              onClick={async () => {
+                this.props.state.currentState.users = []
+                this.props.state.currentState.users = await context.fakeUserRepository.findAll()
               }}
             >
-              Trigger
+              Get users
             </button>
+            <h3>Users</h3>
+            {this.props.state.currentState.users.map(user => (
+              <p>{user.name}</p>
+            ))}
           </div>
         )}
       </Consumer>

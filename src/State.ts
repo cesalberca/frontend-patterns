@@ -1,10 +1,12 @@
-import { Subject } from '../Subject'
-import { Observer } from '../Observer'
+import { Subject } from './Subject'
+import { Observer } from './Observer'
+import { FakeUser } from './FakeUserHttpRepository'
 
 export interface ApplicationState {
   isLoading: boolean
   hasError: boolean
   hasSuccess: boolean
+  users: FakeUser[]
 }
 
 export class State implements Subject {
@@ -41,7 +43,8 @@ export class State implements Subject {
     return {
       isLoading: false,
       hasError: false,
-      hasSuccess: false
+      hasSuccess: false,
+      users: []
     }
   }
 
