@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { contextValue, Provider } from './rootContainer'
-import { LightController } from './LightController'
+import { LightContainer } from './LightContainer'
+import { StateManager } from './state/StateManager'
 
 export class Application extends Component {
   public render(): React.ReactNode {
     return (
       <Provider value={contextValue}>
         <main className="application">
-          <LightController state={contextValue.state} />
+          <LightContainer stateManager={StateManager.instance} />
         </main>
       </Provider>
     )

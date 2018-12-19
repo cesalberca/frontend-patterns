@@ -6,8 +6,6 @@ import { FakeUserHttpRepository} from '../fakeUser/FakeUserHttpRepository'
 import { FakeUser } from '../fakeUser/FakeUser'
 
 export interface AppContext {
-  fakeUserRequestHandler: RequestHandler<FakeUser[]>
-  state: StateManager
   fakeUserRepository: FakeUserRepository
 }
 
@@ -15,8 +13,6 @@ const state = StateManager.instance
 const fakeUserRequestHandler = new RequestHandler<FakeUser[]>(state)
 
 export const contextValue: AppContext = {
-  fakeUserRequestHandler,
-  state,
   fakeUserRepository: new FakeUserHttpRepository(fakeUserRequestHandler)
 }
 

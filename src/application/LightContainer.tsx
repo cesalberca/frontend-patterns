@@ -5,24 +5,24 @@ import { Light, LightStates } from './Light'
 import { Consumer } from './rootContainer'
 
 interface Props {
-  state: StateManager
+  stateManager: StateManager
 }
 
-export class LightController extends Component<Props> implements Observer {
+export class LightContainer extends Component<Props> implements Observer {
   public componentDidMount(): void {
-    this.props.state.register(this)
+    this.props.stateManager.register(this)
   }
 
   public getState(): LightStates {
-    if (this.props.state.state.isLoading) {
+    if (this.props.stateManager.state.isLoading) {
       return 'loading'
     }
 
-    if (this.props.state.state.hasError) {
+    if (this.props.stateManager.state.hasError) {
       return 'error'
     }
 
-    if (this.props.state.state.hasSuccess) {
+    if (this.props.stateManager.state.hasSuccess) {
       return 'success'
     }
 
@@ -36,21 +36,17 @@ export class LightController extends Component<Props> implements Observer {
           <div className="light-controller">
             <Light state={this.getState()} />
             <button
-              disabled={this.props.state.state.isLoading}
-              className={`button ${
-                this.props.state.state.isLoading
-                  ? 'button--disabled'
-                  : ''
-              }`}
+              disabled={this.props.stateManager.state.isLoading}
+              className={`button ${this.props.stateManager.state.isLoading ? 'button--disabled' : ''}`}
               onClick={async () => {
-                this.props.state.state.users = []
-                this.props.state.state.users = await context.fakeUserRepository.findAll()
+                this.props.stateManager.state.users = []
+                this.props.stateManager.state.users = await context.fakeUserRepository.findAll()
               }}
             >
               Get users
             </button>
             <h3>Users</h3>
-            {this.props.state.state.users.map(user => (
+            {this.props.stateManager.state.users.map(user => (
               <p key={user.name}>{user.name}</p>
             ))}
           </div>
