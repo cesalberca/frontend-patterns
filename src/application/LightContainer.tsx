@@ -8,7 +8,18 @@ interface Props {
   stateManager: StateManager
 }
 
-export class LightContainer extends Component<Props> implements Observer {
+interface State {
+  isWarningVisible: boolean
+}
+
+export class LightContainer extends Component<Props, State> implements Observer {
+  public constructor(props: Props) {
+    super(props)
+    this.state = {
+      isWarningVisible: false
+    }
+  }
+
   public componentDidMount(): void {
     this.props.stateManager.register(this)
   }
@@ -39,12 +50,38 @@ export class LightContainer extends Component<Props> implements Observer {
               disabled={this.props.stateManager.state.isLoading}
               className={`button ${this.props.stateManager.state.isLoading ? 'button--disabled' : ''}`}
               onClick={async () => {
-                this.props.stateManager.state.users = []
                 this.props.stateManager.state.users = await context.fakeUserRepository.findAll()
               }}
             >
               Get users
             </button>
+
+            {!(this.props.stateManager.state.hasWarning && this.state.isWarningVisible) ? (
+              <button
+                className="button"
+                onClick={async () => {
+                  this.setState({ isWarningVisible: true })
+                  await context.fakeUserRepository.deleteAll()
+
+                  if (!this.props.stateManager.state.userHasCanceledOperation) {
+                    this.props.stateManager.state.users = await context.fakeUserRepository.findAll()
+                  }
+                }}
+              >
+                Delete users
+              </button>
+            ) : (
+              <button
+                className="button button--warning"
+                onClick={() => {
+                  this.props.stateManager.state.userHasCanceledOperation = true
+                  this.setState({ isWarningVisible: false })
+                }}
+              >
+                Cancel delete users
+              </button>
+            )}
+
             <h3>Users</h3>
             {this.props.stateManager.state.users.map(user => (
               <p key={user.name}>{user.name}</p>

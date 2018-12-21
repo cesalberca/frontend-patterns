@@ -2,15 +2,15 @@ import { Handler } from './Handler'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
 import { RequestHandlerContext } from './RequestHandler'
 
-export class RequestSuccessHandler<T> implements Handler<RequestHandlerContext<T>> {
-  private nextHandler: Handler<RequestHandlerContext<T>> = new RequestEmptyHandler()
+export class RequestSuccessHandler implements Handler<RequestHandlerContext> {
+  private nextHandler: Handler<RequestHandlerContext> = new RequestEmptyHandler()
 
-  public async next(context: RequestHandlerContext<T>) {
-    context.state.state.hasSuccess = true
+  public async next(context: RequestHandlerContext) {
+    context.stateManager.state.hasSuccess = true
     await this.nextHandler.next(context)
   }
 
-  public setNext(handler: Handler<RequestHandlerContext<T>>) {
+  public setNext(handler: Handler<RequestHandlerContext>) {
     this.nextHandler = handler
   }
 }

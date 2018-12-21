@@ -2,15 +2,13 @@ import { createContext } from 'react'
 import { RequestHandler } from '../requestHandlers/RequestHandler'
 import { StateManager } from './state/StateManager'
 import { FakeUserRepository } from '../fakeUser/FakeUserRepository'
-import { FakeUserHttpRepository} from '../fakeUser/FakeUserHttpRepository'
-import { FakeUser } from '../fakeUser/FakeUser'
+import { FakeUserHttpRepository } from '../fakeUser/FakeUserHttpRepository'
 
 export interface AppContext {
   fakeUserRepository: FakeUserRepository
 }
 
-const state = StateManager.instance
-const fakeUserRequestHandler = new RequestHandler<FakeUser[]>(state)
+const fakeUserRequestHandler = new RequestHandler(StateManager.instance)
 
 export const contextValue: AppContext = {
   fakeUserRepository: new FakeUserHttpRepository(fakeUserRequestHandler)

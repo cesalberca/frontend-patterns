@@ -37,6 +37,8 @@ export class StateManager implements Subject {
       isLoading: false,
       hasError: false,
       hasSuccess: false,
+      hasWarning: false,
+      userHasCanceledOperation: false,
       users: []
     }
   }
@@ -45,7 +47,8 @@ export class StateManager implements Subject {
     this.state.isLoading = false
     this.state.hasError = false
     this.state.hasSuccess = false
-    this.state.users = []
+    this.state.hasWarning = false
+    this.state.userHasCanceledOperation = false
   }
 
   public notifyAll() {
