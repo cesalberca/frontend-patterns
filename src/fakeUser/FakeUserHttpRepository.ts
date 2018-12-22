@@ -10,9 +10,9 @@ export class FakeUserHttpRepository implements FakeUserRepository {
   constructor(private readonly requestHandler: RequestHandler) {}
 
   public async findAll(): Promise<FakeUser[]> {
-    const promise = () => this.getFakeUsers()
+    const callback = () => this.getFakeUsers()
 
-    const response = await this.requestHandler.trigger<FakeUser[]>(promise)
+    const response = await this.requestHandler.trigger<FakeUser[]>(callback)
 
     if (response instanceof Request.Fail) {
       throw new Error('users could not be found.')
@@ -22,22 +22,22 @@ export class FakeUserHttpRepository implements FakeUserRepository {
   }
 
   public async deleteAll() {
-    const promise: () => Promise<void> = () =>
+    const callback: () => Promise<void> = () =>
       new Promise(async resolve => {
         await wait(1)
         this.fakeUsers = []
         resolve()
       })
 
-    await this.requestHandler.trigger<void>(promise, true)
+    await this.requestHandler.trigger<void>(callback, true)
   }
 
   private async getFakeUsers(): Promise<FakeUser[]> {
     await wait(1)
-    const hasError = Math.random() >= 20
+    const hasError = Math.random() >= 0.5
 
     if (hasError) {
-      throw new Error()
+      throw new Request.Fail()
     }
 
     return this.fakeUsers

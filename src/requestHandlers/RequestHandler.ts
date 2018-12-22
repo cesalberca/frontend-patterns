@@ -18,23 +18,6 @@ export class RequestHandler {
 
   constructor(private readonly state: StateManager) {}
 
-  private setHandlers(hasWarning: boolean): void {
-    const requestStartHandler = new RequestStartHandler()
-    const requestResponseHandler = new RequestResponseHandler()
-    const requestEmptyHandler = new RequestEmptyHandler()
-
-    if (hasWarning) {
-      this.nextHandler = new RequestWarningHandler()
-      this.nextHandler.setNext(requestStartHandler)
-      requestStartHandler.setNext(requestResponseHandler)
-      requestResponseHandler.setNext(requestEmptyHandler)
-    } else {
-      this.nextHandler = new RequestStartHandler()
-      this.nextHandler.setNext(requestResponseHandler)
-      requestResponseHandler.setNext(requestEmptyHandler)
-    }
-  }
-
   public async trigger<T>(
     callback: () => Promise<T>,
     hasWarning: boolean = false
@@ -44,8 +27,14 @@ export class RequestHandler {
       value: null
     }
 
-    this.setHandlers(hasWarning)
-    const context = { stateManager: this.state, callback, request: null, response }
+    this.nextHandler = this.getHandlers(hasWarning)
+    const context: RequestHandlerContext = {
+      stateManager: this.state,
+      callback,
+      request: null,
+      response
+    }
+
     context.stateManager.setEmptyState()
     await this.nextHandler.next(context)
 
@@ -54,5 +43,36 @@ export class RequestHandler {
     }
 
     return new Request.Success((response.value as unknown) as T)
+  }
+
+  private getHandlers(hasWarning: boolean): Handler<RequestHandlerContext> {
+    if (hasWarning) {
+      return this.getWarningHandlers()
+    }
+
+    return this.getDefaultHandlers()
+  }
+
+  private getWarningHandlers(): Handler<RequestHandlerContext> {
+    const requestStartHandler = new RequestStartHandler()
+    const requestResponseHandler = new RequestResponseHandler()
+    const requestEmptyHandler = new RequestEmptyHandler()
+
+    const handler = new RequestWarningHandler()
+    handler.setNext(requestStartHandler)
+    requestStartHandler.setNext(requestResponseHandler)
+    requestResponseHandler.setNext(requestEmptyHandler)
+
+    return handler
+  }
+
+  private getDefaultHandlers(): Handler<RequestHandlerContext> {
+    const requestResponseHandler = new RequestResponseHandler()
+    const requestEmptyHandler = new RequestEmptyHandler()
+
+    const handler = new RequestStartHandler()
+    handler.setNext(requestResponseHandler)
+    requestResponseHandler.setNext(requestEmptyHandler)
+    return handler
   }
 }
