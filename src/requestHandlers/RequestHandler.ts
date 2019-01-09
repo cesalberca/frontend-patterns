@@ -27,7 +27,7 @@ export class RequestHandler {
       value: null
     }
 
-    this.nextHandler = this.getHandlers(hasWarning)
+    this.nextHandler = this.getNextHandler(hasWarning)
     const context: RequestHandlerContext = {
       stateManager: this.state,
       callback,
@@ -45,7 +45,7 @@ export class RequestHandler {
     return new Request.Success((response.value as unknown) as T)
   }
 
-  private getHandlers(hasWarning: boolean): Handler<RequestHandlerContext> {
+  private getNextHandler(hasWarning: boolean): Handler<RequestHandlerContext> {
     if (hasWarning) {
       return this.getWarningHandlers()
     }
