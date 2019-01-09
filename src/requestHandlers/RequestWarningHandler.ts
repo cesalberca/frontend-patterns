@@ -1,21 +1,22 @@
 import { Handler } from './Handler'
 import { RequestHandlerContext } from './RequestHandler'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
-import { wait } from '../utils/wait'
+import { waitUntilOr } from '../utils/wait'
 
 export class RequestWarningHandler implements Handler<RequestHandlerContext> {
   private nextHandler: Handler<RequestHandlerContext> = new RequestEmptyHandler()
 
   public async next(context: RequestHandlerContext) {
     context.stateManager.state.hasWarning = true
-    await wait(2.5)
+
+    await waitUntilOr(2.5, () => context.stateManager.state.userHasCanceledOperation)
 
     if (context.stateManager.state.userHasCanceledOperation) {
       this.setNext(new RequestEmptyHandler())
     }
 
-    await this.nextHandler.next(context)
     context.stateManager.state.hasWarning = false
+    await this.nextHandler.next(context)
   }
 
   public setNext(handler: Handler<RequestHandlerContext>) {

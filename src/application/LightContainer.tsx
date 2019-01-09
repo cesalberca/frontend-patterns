@@ -24,7 +24,7 @@ export class LightContainer extends Component<Props, State> implements Observer 
     this.props.stateManager.register(this)
   }
 
-  public getState(): LightStates {
+  private getState = (): LightStates => {
     if (this.props.stateManager.state.isLoading) {
       return 'loading'
     }
@@ -40,31 +40,39 @@ export class LightContainer extends Component<Props, State> implements Observer 
     return 'none'
   }
 
+  private toggleWarning = () => {
+    this.setState((previousState) => ({
+      isWarningVisible: !previousState.isWarningVisible
+    }))
+  }
+
   public render(): React.ReactNode {
+    const { state } = this.props.stateManager
+
     return (
       <Consumer>
         {context => (
           <div className="light-controller">
             <Light state={this.getState()} />
             <button
-              disabled={this.props.stateManager.state.isLoading}
-              className={`button ${this.props.stateManager.state.isLoading ? 'button--disabled' : ''}`}
+              disabled={state.isLoading}
+              className={`button ${state.isLoading ? 'button--disabled' : ''}`}
               onClick={async () => {
-                this.props.stateManager.state.users = await context.fakeUserRepository.findAll()
+                state.users = await context.fakeUserRepository.findAll()
               }}
             >
               Get users
             </button>
 
-            {!(this.props.stateManager.state.hasWarning && this.state.isWarningVisible) ? (
+            {!(state.hasWarning && this.state.isWarningVisible) ? (
               <button
                 className="button"
                 onClick={async () => {
-                  this.setState({ isWarningVisible: true })
+                  this.toggleWarning()
                   await context.fakeUserRepository.deleteAll()
 
-                  if (!this.props.stateManager.state.userHasCanceledOperation) {
-                    this.props.stateManager.state.users = await context.fakeUserRepository.findAll()
+                  if (!state.userHasCanceledOperation) {
+                    state.users = await context.fakeUserRepository.findAll()
                   }
                 }}
               >
@@ -74,8 +82,8 @@ export class LightContainer extends Component<Props, State> implements Observer 
               <button
                 className="button button--warning"
                 onClick={() => {
-                  this.props.stateManager.state.userHasCanceledOperation = true
-                  this.setState({ isWarningVisible: false })
+                  state.userHasCanceledOperation = true
+                  this.toggleWarning()
                 }}
               >
                 Cancel delete users
@@ -83,7 +91,7 @@ export class LightContainer extends Component<Props, State> implements Observer 
             )}
 
             <h3>Users</h3>
-            {this.props.stateManager.state.users.map(user => (
+            {state.users.map(user => (
               <p key={user.name}>{user.name}</p>
             ))}
           </div>

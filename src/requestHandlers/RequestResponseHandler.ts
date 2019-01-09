@@ -19,11 +19,10 @@ export class RequestResponseHandler implements Handler<RequestHandlerContext> {
     try {
       context.response.value = await context.request
       this.setNext(this.requestSuccessHandler)
-      await this.nextHandler.next(context)
     } catch (e) {
       this.setNext(this.requestErrorHandler)
-      await this.nextHandler.next(context)
     } finally {
+      await this.nextHandler.next(context)
       context.stateManager.state.isLoading = false
     }
   }
