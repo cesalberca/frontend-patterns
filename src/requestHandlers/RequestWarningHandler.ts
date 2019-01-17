@@ -1,5 +1,5 @@
 import { Handler } from './Handler'
-import { RequestHandlerContext } from './RequestHandler'
+import { RequestHandlerContext } from './RequestHandlerContext'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
 import { waitUntilOr } from '../utils/wait'
 

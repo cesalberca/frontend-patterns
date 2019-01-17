@@ -2,7 +2,7 @@ import { Handler } from './Handler'
 import { RequestErrorHandler } from './RequestErrorHandler'
 import { RequestSuccessHandler } from './RequestSuccessHandler'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
-import { RequestHandlerContext } from './RequestHandler'
+import { RequestHandlerContext } from './RequestHandlerContext'
 
 export class RequestResponseHandler implements Handler<RequestHandlerContext> {
   private nextHandler: Handler<RequestHandlerContext> = new RequestEmptyHandler()

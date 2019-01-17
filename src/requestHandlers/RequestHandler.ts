@@ -5,13 +5,7 @@ import { RequestResponseHandler } from './RequestResponseHandler'
 import { Request } from '../Request'
 import { RequestWarningHandler } from './RequestWarningHandler'
 import { Handler } from './Handler'
-
-export type RequestHandlerContext = {
-  stateManager: StateManager
-  callback: () => Promise<unknown>
-  request: Promise<unknown> | null
-  response: Request.Payload<unknown>
-}
+import { RequestHandlerContext } from './RequestHandlerContext'
 
 export class RequestHandler {
   private nextHandler: Handler<RequestHandlerContext> = new RequestEmptyHandler()

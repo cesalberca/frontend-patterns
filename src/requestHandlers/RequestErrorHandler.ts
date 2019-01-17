@@ -1,6 +1,6 @@
 import { Handler } from './Handler'
 import { RequestEmptyHandler } from './RequestEmptyHandler'
-import { RequestHandlerContext } from './RequestHandler'
+import { RequestHandlerContext } from './RequestHandlerContext'
 
 export class RequestErrorHandler implements Handler<RequestHandlerContext> {
   private nextHandler: Handler<RequestHandlerContext> = new RequestEmptyHandler()
